@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Utilisateurs
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<br><br><br>
+		<h1>Utilisateurs</h1>
+		<br><br><br>
+		{% include 'layouts/_flash_message.html.twig' %}
+		<table class="table">
+			<tr>
+				<th>Id</th>
+				<th>Email</th>
+				<th>Nom</th>
+				<th>Prénom</th>
+				<th>Rôle</th>
+				<th>Actions</th>
+			</tr>
+			{% for user in users %}
+				<tr>
+					<td>{{ user.id }}</td>
+					<td>{{ user.email }}</td>
+					<td>{{ user.firstname }}</td>
+					<td>{{ user.lastname }}</td>
+					<td>
+						{% for role in user.roles %}
+							{{ role }}
+						{% endfor %}
+					</td>
+					<td>
+						{% if 'ROLE_ADMIN' not in user.roles %}
+							{% if 'ROLE_PRENIUM' not in user.roles %}
+								<a onclick="return confirm('Voulez-vous vraiment affecter le rôle Premium à cet utilisateur ?')" href="{{ path('app_user_to_prenium', {'id': user.id}) }}" class="btn btn-outline-primary">
+									Ajouter rôle Premium
+								</a>
+							{% else %}
+								<p>Le rôle Premium est déjà affecté à cet utilisateur.</p>
+								<a onclick="return confirm('Voulez-vous vraiment retirer le rôle Premium de cet utilisateur ?')" href="{{ path('app_user_remove_prenium_role', {'id': user.id}) }}" class="btn btn-warning">
+									Retirer rôle Premium
+								</a>
+							{% endif %}
+							<a href="{{ path('app_user_remove', {'id':user.id})}}" class="btn btn-danger">Supprimer</a>
+						{% else %}
+							<p>Administrateur : modification ou suppression non autorisée.</p>
+						{% endif %}
+					</td>
+
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+{% endblock %}

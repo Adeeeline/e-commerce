@@ -1,0 +1,15 @@
+
+{% block title %}Modifier une catégorie{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Modifier une catégory</h1>
+        <div class="form">
+            {{ form_start(form) }}
+            {{ form_row(form.name, {'attr':{'class': 'form form-co,trol'}}) }}
+            <br>
+            <input type="submit" value="Modifier" class="btn btn-primary">
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
