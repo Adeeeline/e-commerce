@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commandes
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<h1>Commandes</h1><br><br>
+		{% for order in orders %}
+			<h4>Commande numéro
+				{{ order.id }}</h4>
+			{% if order.isCompleted == true %}
+				<span class="text-success">Commande livrée : {{ order.createdAt|date }}</span><br><br>
+				{% else %}
+                <span class="text-danger">Commande non livrée : {{ order.createdAt|date }}</span><br><br>
+			{% endif %}
+			<span>Informations du client</span><br>
+			<table class="table table-bordered">
+				<tr>
+					<th>Nom</th>
+					<th>Prénom</th>
+					<th>Téléphone</th>
+					<th>Adresse</th>
+					<th>Ville</th>
+				</tr>
+				<tr>
+					<td>{{ order.firstname }}</td>
+					<td>{{ order.lastname }}</td>
+					<td>{{ order.phone }}</td>
+					<td>{{ order.adresse }}</td>
+					<td>{{ order.city.name }}</td>
+				</tr>
+			</table>
+			<span>Corps de la commande</span>
+
+			<table class="table table-bordered">
+				<tr>
+					<th>Image du produit</th>
+					<th>Nom du produit</th>
+					<th>Description</th>
+					<th>Prix unitaire (en euros)</th>
+					<th>Quandtité</th>
+					<th>Total (en euros)</th>
+				</tr>
+				{% for product in order.orderProducts %}
+					<tr>
+						<td><img style="width: 80px" src="{{ asset('uploads/image/' ~ product.product.image) }}" alt=""></td>
+						<td>
+							{{product.product.name}}
+						</td>
+						<td>
+							{{product.product.description|slice(0.200)}}
+						</td>
+						<td>
+							{{product.product.price}}
+						</td>
+						<td>
+							{{product.quantity}}
+						</td>
+						<td>
+							{{product.product.price * product.quantity}}
+						</td>
+					</tr>
+				{% endfor %}
+			</table>
+			<h5>Frais de livraison :
+				{{ order.city.shippingCost }}
+				euros</h5>
+			<h5>Total à payer :
+				{{ order.totalPrice  }}
+				euros</h5>
+            {% if order.isCompleted != true %}
+                <a href="{{ path('app_order_is_completed_update', {'id':order.id})}}" class="btn btn-outline-primary col-2 m-lg-1">Marquer comme livrée</a>
+            {% endif %}
+			<a onclick="return confirm('Vouslez-vous vraiment supprimer cette commande ?')" href="{{ path('app_order_remove', {'id':order.id})}}" class="btn btn-outline-danger col-2 m-lg-1">Supprimer la commande</a>
+		{% endfor %}
+		{{ knp_pagination_render(orders, 'layouts/pagination_template.html.twig') }}
+	</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+body {
+    background-color: #f0e1d2;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    background-color: #fff;
+
+}
+
+h1 {
+    color: #6c5b7b;
+}
+
+
+
+th, td {
+    text-align: center;
+    padding: 15px;
+}
+
+th {
+    background-color: #f7b7a3;
+    color: #6c5b7b;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #f9d8c8;
+}
+
+.cart-actions .btn-success {
+    background-color: #98c8e5;
+    border-color: #98c8e5;
+}
+
+.cart-actions .btn-danger {
+    background-color: #f79c42;
+    border-color: #f79c42;
+}
+
+.stars {
+    display: flex;
+    gap: 5px;
+}
+.stars i {
+    font-size: 1.5em;
+}
+.navbar-brand h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.navbar .dropdown-menu {
+    min-width: 200px;
+}
+
+.navbar .nav-link {
+    padding: 0.5rem 1rem;
+}
+

@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}LUDOVERS
+{% block title %}Recherche
 {% endblock %}
 
 {% block body %}
 	<div class="container">
-		<h1>Produits</h1>
+		<h1>Résultat de la recherche pour : "{{ word }}" </h1>
 		<div class="row">
 			{% for product in products %}
 				<div class="col-md-3 mt-4">

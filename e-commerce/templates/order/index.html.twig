@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div class="row">
+			<div class="col-8">
+				<h1>Commandes</h1>
+				{{ form_start(form) }}
+				{{ form_widget(form) }}
+				<input type="submit" value="Continue" class="btn btn-outline-primary">
+				{{ form_end(form) }}
+			</div>
+			<div class="col-4">
+				<span>Montant à payer :
+				</span>
+				<h2>
+					<span id="card-price">{{ total }}
+						euros</span>
+				</h2>
+				<span>Frais de livraison :</span>
+				<h2>
+					<span id="shippingCost">0</span>
+					euros
+				</h2>
+				<span>Total à payer :
+				</span>
+				<h2>
+					<span class="total-price">0</span>
+					euros
+				</h2>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+	<script>
+		var $j = jQuery.noConflict();
+$j(document).ready(function () {
+const citySelector = $('#order_city');
+const cityValue = citySelector.val();
+
+const url = `https://127.0.0.1:8000/city/${cityValue}/shipping/cost`;
+
+function ajaxRequest(url) {
+$j.ajax({
+url: url,
+type: 'GET',
+success: function (response) {
+const newResponse = JSON.parse(response);
+if (parseInt(newResponse.status) === 200) {
+console.log(newResponse.status);
+$('#shippingCost').text(newResponse.content);
+
+const cardPrice = parseInt($("#card-price").text());
+const shippingCost = parseInt($("#shippingCost").text());
+
+$('.total-price').text(cardPrice + shippingCost)
+console.log(cardPrice)
+}
+},
+error: function (xhr, status, error) {
+console.error('Ajax error:', error);
+}
+});
+}
+
+// Initial request
+ajaxRequest(url);
+
+// Update on city change
+citySelector.on('change', function () {
+const newCityValue = $(this).val(); // Get the new city value
+const newUrl = `https://127.0.0.1:8000/city/${newCityValue}/shipping/cost`;
+console.log('City changed:', newCityValue);
+ajaxRequest(newUrl); // Make a new AJAX request
+});
+});
+	</script>
+
+{% endblock %}

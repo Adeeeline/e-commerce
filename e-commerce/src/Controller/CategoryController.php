@@ -23,6 +23,13 @@ class CategoryController extends AbstractController
         ]);
     }
 
+    public function navbarCategories(CategoryRepository $categoryRepository): Response
+    {
+        return $this->render('partials/navbar.html.twig', [
+            'categories' => $categoryRepository->findAll(),
+        ]);
+    }
+
     #[Route('/admin/category/new', name: 'app_category_new')]
     public function addCategory(EntityManagerInterface $entityManager, Request $request): Response
     {

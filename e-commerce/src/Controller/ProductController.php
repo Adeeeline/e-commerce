@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use DateTimeImmutable;
 use App\Entity\Product;
 use App\Form\ProductType;
 use App\Form\ProductUpdateType;
@@ -18,7 +17,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
-#[Route('prenium/product')]
+#[Route('admin/product')]
 class ProductController extends AbstractController
 {
     #[Route('/', name: 'app_product_index', methods: ['GET'])]
@@ -173,10 +172,10 @@ class ProductController extends AbstractController
     public function productAddHistory($id, ProductRepository $productRepository, AddProductHistoryRepository $addProductHistoryRepository): Response
     {
         $product = $productRepository->find($id);
-        $productAddedHistory = $addProductHistoryRepository->findBy(['product' => $product], ['id' => 'DESC']);        
+        $productAddedHistory = $addProductHistoryRepository->findBy(['product' => $product], ['id' => 'DESC']);
 
-        return $this->render('product/addedStockHistoryShow.html.twig',[
-        "productsAdded" => $productAddedHistory
+        return $this->render('product/addedStockHistoryShow.html.twig', [
+            "productsAdded" => $productAddedHistory
         ]);
     }
 }

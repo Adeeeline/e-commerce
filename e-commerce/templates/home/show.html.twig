@@ -1,10 +1,96 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
+	Produit
 {% endblock %}
 
 {% block body %}
 	<div class="container">
-		<h1>{{ product.name }}</h1>
+		<div class="row g-0" style="margin-top: 70px">
+			<div class="col-md-4">
+				<img src="{{ asset('uploads/images/' ~ product.image) }}" class="img-fluid rounded-start" alt="...">
+			</div>
+			<div class="col-md-8">
+				<div class="card-body">
+					<h3 class="card-title">{{ product.name }}</h3>
+					<p class="card-text">{{ product.description }}</p>
+					<p class="card-text">Prix :
+						{{ product.price }}
+						€</p>
+					<a type="button" href="#">
+						<i class="fa-solid fa-cart-shopping fa-lg" style="color: #000000"></i>
+					</a>
+				</div>
+			</div>
+		</div>
+		<br><br>
+		<h2>Derniers produits ajoutés</h2>
+		<div class="row">
+			{% for product in products %}
+				<div class="col-md-3 mt-4">
+					<div class="card" style="width: 18rem;">
+						<a href="{{ path('app_home_product_show', {'id': product.id}) }}">
+							<img class="card-img-top" src="{{ asset('uploads/images/' ~ product.image) }}">
+						</a>
+						<div class="card-body">
+							<a href="{{ path('app_home_product_show', {'id': product.id}) }}" style="text-decoration: none; color: black;">
+								<h5 class="card-title">{{ product.name }}</h5>
+							</a>
+							<p class="card-text">{{ product.description|slice(0,100) }}...</p>
+						</div>
+						<div class="row">
+							<div class="card-body">
+								<p class="card-text">{{ product.price }}</p>
+								<a type="button" href="{{ path('app_cart_new', {'id': product.id}) }}">
+									<i class="fa-solid fa-cart-shopping fa-lg" style="color: #000000"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+
+		<h3>Ajouter un commentaire</h3>
+		<div>
+			<h2>Note moyenne :
+				{{ product.getAverageRating()|round }}/5</h2>
+			<div class="stars">
+				{% for i in 1..5 %}
+					<i class="fa-solid fa-star" style="color: {{ i <= product.getAverageRating() ? '#f7b32b' : '#ddd' }}"></i>
+				{% endfor %}
+			</div>
+		</div>
+		{{ form_start(form) }}
+		{{ form_row(form.content) }}
+		<input type="submit" class="btn-succes btn btn-block">
+		{{ form_end(form) }}
+		
+		<div class="comment-section mt-5">
+			<h3>Commentaires :</h3>
+
+			{% for comment in comments %}
+				<div class="comment">
+					<div class="rating">
+						{% for i in 1..5 %}
+							{% if i <= comment.rating %}
+								<span style="color: gold;">⭐️</span>
+							{% else %}
+								<span style="color: gray;">⭐️</span>
+							{% endif %}
+						{% endfor %}
+					</div>
+					<p>{{ comment.content }}</p>
+					<small>Posté par
+						User
+						le
+						{{ comment.createdAt|date('d/m/Y') }}</small>
+				</div>
+			{% else %}
+				<p>Aucun commentaire pour le moment.</p>
+			{% endfor %}
+
+		</div>
 	</div>
-{% endblock %}
+</div>
+<script src="{{ asset('js/rating.js') }}"></script>{% endblock %}

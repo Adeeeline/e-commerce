@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -29,11 +31,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $firstName = null;
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'user')]
+    private Collection $comments;
 
-    #[ORM\Column(length: 255)]
-    private ?string $lastName = null;
+    #[ORM\Column(nullable: true)]
+    private ?int $purchaseCount = null;
+
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -105,27 +112,52 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getFirstName(): ?string
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
     {
-        return $this->firstName;
+        return $this->comments;
     }
 
-    public function setFirstName(string $firstName): static
+    public function addComment(Comment $comment): static
     {
-        $this->firstName = $firstName;
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setUser($this);
+        }
 
         return $this;
     }
 
-    public function getLastName(): ?string
+    public function removeComment(Comment $comment): static
     {
-        return $this->lastName;
-    }
-
-    public function setLastName(string $lastName): static
-    {
-        $this->lastName = $lastName;
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getUser() === $this) {
+                $comment->setUser(null);
+            }
+        }
 
         return $this;
+    }
+
+    public function getPurchaseCount(): ?int
+    {
+        return $this->purchaseCount;
+    }
+
+    public function setPurchaseCount(?int $purchaseCount): static
+    {
+        $this->purchaseCount = $purchaseCount;
+
+        return $this;
+    }
+
+    public function incrementPurchaseCount(): self
+    {
+        $this->purchaseCount++; // Incrémente le compteur
+
+        return $this; // Retourne l'objet pour permettre l'appel en chaîne (fluent interface)
     }
 }
